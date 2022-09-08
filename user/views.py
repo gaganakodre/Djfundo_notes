@@ -1,9 +1,10 @@
 import json
 
+from django.contrib.auth import authenticate
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-
-from user.models import User
+from django.contrib.auth.models import User
+# from user.models import User
 
 
 # Create your views here.
@@ -18,7 +19,7 @@ def user_register(request):
     try:
         if request.method == "POST":
             data = json.loads(request.body)
-            details = User.objects.create(**data)
+            details = User.objects.create_user(**data)
             print(details)
         else:
             response.update(message="method not allowed", status=405)
@@ -38,8 +39,10 @@ def user_login(request):
     try:
         if request.method == "POST":
             data = json.loads(request.body)
-            user_list = User.objects.filter(email=data.get("email"), password=data.get("password"))
-            if not user_list.exists():
+            email = data.get("email")
+            password = data.get("password")
+            user = authenticate(email=email, password=password)
+            if user is not None:
                 response.update(message="invalid credentials",status=400)
         else:
             response.update(message="method not allowed",status=405)
