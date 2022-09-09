@@ -1,53 +1,41 @@
-import json
-
-from django.contrib.auth import authenticate
-from django.http import JsonResponse
+from django.contrib.auth import authenticate, login
 from django.views.decorators.csrf import csrf_exempt
-from django.contrib.auth.models import User
-# from user.models import User
+from rest_framework.exceptions import ValidationError
+from django.shortcuts import render
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from .models import User
+from .serializers import UserSerializer, LoginSerializer
 
 
-# Create your views here.
-
-@csrf_exempt
-def user_register(request):
-    """
-    Function used for the user registration
-    """
-    response = {"message": "successfully contact added", "status": 201}
-
-    try:
-        if request.method == "POST":
-            data = json.loads(request.body)
-            details = User.objects.create_user(**data)
-            print(details)
-        else:
-            response.update(message="method not allowed", status=405)
-
-    except Exception as e:
-        response.update(message=str(e), status=400)
-    return JsonResponse(response, status=response.get("status"))
 
 
-@csrf_exempt
-def user_login(request):
-    """
-    Function used for the user login
-    """
-    response={"message": "logged in successfully","status":200}
+class UserRegisterView(APIView):
+    @csrf_exempt
+    def post(self, request):
+        try:
+            serializer = UserSerializer(data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response({"status": True, "message": "register successfully",
+                                 "data": serializer.data}, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"status": False, "message": "register Unsuccessfull",
+                             "data": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
-    try:
-        if request.method == "POST":
-            data = json.loads(request.body)
-            email = data.get("email")
-            password = data.get("password")
-            user = authenticate(email=email, password=password)
-            if user is not None:
-                response.update(message="invalid credentials",status=400)
-        else:
-            response.update(message="method not allowed",status=405)
 
-    except Exception as e:
-        response.update(message=str(e), status=400)
-    return JsonResponse(response, status=response.get("status"))
+class UserLoginView(APIView):
 
+    def post(self, request):
+        try:
+            serializer = LoginSerializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+
+            response={"data":serializer.data,"status":200}
+        except ValidationError as e:
+            response={"message":e.detail,'status':e.status_code}
+        except Exception as e:
+            response={"message":str(e),'status':400}
+        return Response(response,status=response['status'])
