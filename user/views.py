@@ -1,4 +1,6 @@
 from django.contrib.auth import authenticate, login
+from django.views.decorators.csrf import csrf_exempt
+from rest_framework.exceptions import ValidationError
 from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -7,7 +9,10 @@ from .models import User
 from .serializers import UserSerializer, LoginSerializer
 
 
+
+
 class UserRegisterView(APIView):
+    @csrf_exempt
     def post(self, request):
         try:
             serializer = UserSerializer(data=request.data)
@@ -21,24 +26,16 @@ class UserRegisterView(APIView):
 
 
 class UserLoginView(APIView):
+
     def post(self, request):
         try:
             serializer = LoginSerializer(data=request.data)
             serializer.is_valid(raise_exception=True)
-            email = serializer.data.get('email')
-            print(email)
-            password = serializer.data.get('password')
-            print(password)
-            user = authenticate(email=email, password=password)
-            print(user)
-            if user is not None:
-                login(request,user)
-                # return Response({"status": True, "message": "login successful",
-                #                  "data": "data"}, status=status.HTTP_200_OK)
-                return Response({ "message": "login successful",
-                                 "data": "data"}, status=status.HTTP_200_OK)
+            serializer.save()
+
+            response={"data":serializer.data,"status":200}
+        except ValidationError as e:
+            response={"message":e.detail,'status':e.status_code}
         except Exception as e:
-            # return Response({"status": False, "message": "login unsuccessful",
-            #                  "data": str(e)}, status=status.HTTP_400_BAD_REQUEST)
-            return Response({ "message": "login unsuccessful",
-                             "data": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+            response={"message":str(e),'status':400}
+        return Response(response,status=response['status'])

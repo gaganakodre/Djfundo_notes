@@ -75,7 +75,7 @@ WSGI_APPLICATION = 'fundo_notes.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'fundo_notes',
+        'NAME': 'fundonotes',
         'USER': 'postgres',
         'PASSWORD': 'Gowri@2000',
         'HOST': '127.0.0.1',
@@ -83,8 +83,8 @@ DATABASES = {
     }
 }
 AUTHENTICATION_BACKENDS = (
-        'django.contrib.auth.backends.ModelBackend',
-    )
+    'django.contrib.auth.backends.ModelBackend',
+)
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
 
@@ -123,4 +123,4 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-# AUTH_USER_MODEL = 'user.User'
+AUTH_USER_MODEL = 'user.User'
