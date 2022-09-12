@@ -39,6 +39,9 @@ class UserManager(BaseUserManager):
 
 # Create your models here.
 class User(AbstractBaseUser):
+    """
+    This model will create the user
+    """
     username = models.CharField(max_length=200, unique=True,blank=True,null=True)
     first_name = models.CharField(max_length=200,blank=True,null=True)
     last_name = models.CharField(max_length=200,blank=True,null=True)
