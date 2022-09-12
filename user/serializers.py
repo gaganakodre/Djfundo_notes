@@ -4,8 +4,9 @@ from user.models import User
 
 
 class UserSerializer(serializers.ModelSerializer):
-    # password = serializers.CharField(max_length=250, write_only=True)
-
+    """
+    This Serializer class is used for user register
+    """
     class Meta:
         model = User
         fields = ['username', 'first_name', 'last_name', 'email', 'password']
@@ -22,10 +23,16 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class LoginSerializer(serializers.Serializer):
+    """
+    This Serializer class is used for user login
+    """
     email = serializers.EmailField(max_length=255, required=True)
     password = serializers.CharField(max_length=250, required=True, write_only=True)
 
     def create(self, validate_data):
+        """
+        Method to create the user login
+        """
         print(validate_data)
         user = authenticate(**validate_data)
 
