@@ -18,7 +18,7 @@ class JWT:
 
 
 def verify_token(function):
-    def wrapper(self,request):
+    def wrapper(self, request):
         token = request.headers.get('token')
         print(token)
         if not token:
@@ -28,6 +28,6 @@ def verify_token(function):
         if not user_id:
             raise Exception("User not found")
         request.data.update({"user": user_id})
-        return function(self,request)
+        return function(self, request)
 
     return wrapper
