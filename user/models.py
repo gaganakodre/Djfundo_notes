@@ -42,11 +42,12 @@ class User(AbstractBaseUser):
     """
     This model will create the user
     """
-    username = models.CharField(max_length=200, unique=True,blank=True,null=True)
-    first_name = models.CharField(max_length=200,blank=True,null=True)
-    last_name = models.CharField(max_length=200,blank=True,null=True)
+    username = models.CharField(max_length=200, unique=True, blank=True, null=True)
+    first_name = models.CharField(max_length=200, blank=True, null=True)
+    last_name = models.CharField(max_length=200, blank=True, null=True)
     email = models.EmailField(max_length=200, unique=True)
     password = models.CharField(max_length=250)
+    is_verified = models.BooleanField(default=False)
 
     objects = UserManager()
 
