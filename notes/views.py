@@ -5,7 +5,7 @@ from rest_framework.views import APIView
 from notes.models import Notes
 from notes.serializers import NoteSerializer
 import logging
-
+from user.token import verify_token
 logging.basicConfig(filename='Djfundo_note.log', encoding='utf-8', level=logging.DEBUG,
                     format='%(asctime)s %(message)s', datefmt='%m/%d/%Y %I:%M:%S %p')
 logger = logging.getLogger()
@@ -16,7 +16,7 @@ class Note(APIView):
     """
     This class performs CRUD operation for Notes model
     """
-
+    @verify_token
     def post(self, request):
         """
         This method create note for user
@@ -35,12 +35,14 @@ class Note(APIView):
             logger.error(ex)
             return Response({"message": str(ex), "status": 400, "data": {}}, status=status.HTTP_400_BAD_REQUEST)
 
+    @verify_token
     def get(self, request):
         """
         This method used to retrieve the data
         """
 
         try:
+            print(request.data)
             notes = Notes.objects.filter(user=request.data.get('user'))
             serializer = NoteSerializer(notes, many=True)
             logger.info("Retrieved data successfully")
@@ -50,12 +52,14 @@ class Note(APIView):
             logger.error(e)
             return Response({"message": str(e), "status": 400, "data": {}}, status=status.HTTP_400_BAD_REQUEST)
 
+    @verify_token
     def put(self, request):
         """
         This method update the note of a user
         """
         try:
-            note=Notes.objects.get(id=request.data.get("id"))
+
+            note = Notes.objects.get(id=request.data.get('id'))
             serializer = NoteSerializer(note, data=request.data)
             serializer.is_valid(raise_exception=True)
             serializer.save()
@@ -69,6 +73,7 @@ class Note(APIView):
             logger.error(e)
             return Response({"message": str(e), "status": 404, "data": {}}, status=status.HTTP_404_NOT_FOUND)
 
+    @verify_token
     def delete(self, request):
         """
         This method delete the note of a user
