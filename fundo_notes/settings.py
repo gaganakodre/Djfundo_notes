@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'user',
     'notes',
     'rest_framework',
+    'drf_yasg',
 ]
 
 MIDDLEWARE = [
@@ -140,3 +141,14 @@ EMAIL_HOST_USER = 'maheshkodergowri@gmail.com'
 EMAIL_HOST_PASSWORD = 'cndeylgjynihdbhv'
 
 BASE_URL='http://127.0.0.1:8000'
+
+SWAGGER_SETTINGS = {
+    'USE_SESSION_AUTH': False,
+    'SECURITY_DEFINITIONS': {
+        'Bearer': {
+            'type': 'apiKey',
+            'name': 'Token',
+            'in': 'header'
+        }
+    }
+}

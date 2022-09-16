@@ -10,6 +10,8 @@ from .models import User
 from django.conf import settings
 from django.core.mail import send_mail
 from .utils import Util
+from rest_framework.generics import GenericAPIView
+from drf_yasg.utils import swagger_auto_schema
 
 import logging
 
@@ -18,10 +20,11 @@ logging.basicConfig(filename='Djfundo_note.log', encoding='utf-8', level=logging
 logger = logging.getLogger()
 
 
-class UserRegisterView(APIView):
+class UserRegisterView(GenericAPIView):
     """
     Class is to register for the user
     """
+    serializer_class = UserSerializer
 
     def post(self, request):
         """
@@ -53,6 +56,7 @@ class UserLoginView(APIView):
     This class is used for the User login
     """
 
+    @swagger_auto_schema(request_body=LoginSerializer)
     def post(self, request):
         """
         Method is used for the user login
