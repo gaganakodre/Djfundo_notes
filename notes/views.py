@@ -10,6 +10,7 @@ from rest_framework.views import APIView
 from notes.models import Notes
 from notes.serializers import NoteSerializer
 from user.token import verify_token
+from .utils import RedisNote
 
 logging.basicConfig(filename='Djfundo_note.log', encoding='utf-8', level=logging.DEBUG,
                     format='%(asctime)s %(message)s', datefmt='%m/%d/%Y %I:%M:%S %p')
@@ -39,6 +40,7 @@ class Note(APIView):
             serializer = NoteSerializer(data=request.data)
             serializer.is_valid(raise_exception=True)
             serializer.save()
+            RedisNote().save(serializer.data, request.data.get('user'))
             logger.info("notes created successfully")
             return Response({"message": "Note Created", "status": 201, "data": serializer.data},
                             status=status.HTTP_201_CREATED)
@@ -54,13 +56,13 @@ class Note(APIView):
         """
         This method used to retrieve the data
         """
-
         try:
-            print(request.data)
             notes = Notes.objects.filter(user=request.data.get('user'))
             serializer = NoteSerializer(notes, many=True)
+            redis_data = RedisNote().get(request.data.get('user'))
             logger.info("Retrieved data successfully")
-            return Response({"message": "Data Retrieved", "status": 200, "data": serializer.data},
+            return Response({"message": "Data Retrieved", "status": 200, "data": serializer.data,
+                             "cache": redis_data.values()},
                             status=status.HTTP_200_OK)
         except Exception as e:
             logger.error(e)
@@ -85,6 +87,7 @@ class Note(APIView):
             serializer = NoteSerializer(note, data=request.data)
             serializer.is_valid(raise_exception=True)
             serializer.save()
+            RedisNote().save(serializer.data, request.data.get('user'))
             logger.info(" data updated successfully")
             return Response({"message": "Note Updated", "data": serializer.data},
                             status=status.HTTP_202_ACCEPTED)
@@ -109,6 +112,7 @@ class Note(APIView):
         try:
             note_object = Notes.objects.filter(id=request.data.get('id'))
             note_object.delete()
+            RedisNote().delete(request.data.get('user'), request.data.get('id'))
             logger.info(" data deleted successfully")
             return Response({"message": "Note Deleted", "status": 204, "data": {}},
                             status=status.HTTP_204_NO_CONTENT)

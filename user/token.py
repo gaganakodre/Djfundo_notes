@@ -20,7 +20,6 @@ class JWT:
 def verify_token(function):
     def wrapper(self, request):
         token = request.headers.get('token')
-        print(token)
         if not token:
             raise Exception("Auth token required")
         decode = JWT.jwt_decode(token=token)

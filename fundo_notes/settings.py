@@ -142,6 +142,7 @@ EMAIL_HOST_PASSWORD = 'cndeylgjynihdbhv'
 
 BASE_URL='http://127.0.0.1:8000'
 
+
 SWAGGER_SETTINGS = {
     'USE_SESSION_AUTH': False,
     'SECURITY_DEFINITIONS': {
@@ -152,3 +153,5 @@ SWAGGER_SETTINGS = {
         }
     }
 }
+
+REDIS_CONFIG = {"host": 'localhost', "port": 6379, "db": 0}
