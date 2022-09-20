@@ -1,19 +1,17 @@
-import jwt
-from django.contrib.auth import authenticate
+import logging
+
+from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
-from rest_framework.exceptions import ValidationError, AuthenticationFailed
+from rest_framework.exceptions import ValidationError
+from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from .serializers import UserSerializer, LoginSerializer
+
 from user.token import JWT
 from .models import User
-from django.conf import settings
-from django.core.mail import send_mail
+from .serializers import UserSerializer, LoginSerializer
+from .task import email_sender
 from .utils import Util
-from rest_framework.generics import GenericAPIView
-from drf_yasg.utils import swagger_auto_schema
-
-import logging
 
 logging.basicConfig(filename='Djfundo_note.log', encoding='utf-8', level=logging.DEBUG,
                     format='%(asctime)s %(message)s', datefmt='%m/%d/%Y %I:%M:%S %p')
@@ -35,8 +33,7 @@ class UserRegisterView(GenericAPIView):
             serializer.is_valid(raise_exception=True)
             serializer.save()
             logger.info("user successfully registered")
-            Util.user_verify_user(id=serializer.data.get("id"),email=serializer.data.get("email"))
-
+            Util.user_verify_user(id=serializer.data.get("id"), email=serializer.data.get("email"))
             return Response({"status": True, "message": "register successfully",
                              "data": serializer.data}, status=status.HTTP_200_OK)
 

@@ -1,13 +1,19 @@
-from django.conf import settings
 from django.core.mail import EmailMessage
+from user.token import JWT
+import logging
+from celery import shared_task
+from django.conf import settings
 from rest_framework.reverse import reverse
 
-from user.token import JWT
+logging.basicConfig(filename='fundoo_note.log', encoding='utf-8', level=logging.DEBUG,
+                    format='%(asctime)s %(message)s', datefmt='%m/%d/%Y %I:%M:%S %p')
+logger = logging.getLogger()
 
 
 class Util:
     @staticmethod
-    def send_email(data):  # user.utils.Util.send_emai
+    @shared_task
+    def send_email(data):
         email = EmailMessage(
             subject=data['subject'],
             body=data['body'],
@@ -27,3 +33,4 @@ class Util:
 
         }
         cls.send_email(data)
+
