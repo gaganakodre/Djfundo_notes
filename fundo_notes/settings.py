@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/4.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
-
+import os
 from pathlib import Path
 from datetime import timedelta
 
@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'notes',
     'rest_framework',
     'drf_yasg',
+    'lables',
 ]
 
 MIDDLEWARE = [
