@@ -56,3 +56,8 @@ class User(AbstractBaseUser):
 
     def __str__(self):
         return self.username
+
+class MiddleWareModel(models.Model):
+    method = models.CharField(max_length=255)
+    url = models.CharField(max_length=255)
+    count = models.IntegerField(default=1)
