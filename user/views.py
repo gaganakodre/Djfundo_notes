@@ -1,19 +1,15 @@
-import jwt
-from django.contrib.auth import authenticate
-from django.urls import reverse
 from rest_framework import status
-from rest_framework.exceptions import ValidationError, AuthenticationFailed
+from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from .serializers import UserSerializer, LoginSerializer
 from user.token import JWT
 from .models import User
 from django.conf import settings
-from django.core.mail import send_mail
-from .utils import Util
 from rest_framework.generics import GenericAPIView
 from drf_yasg.utils import swagger_auto_schema
-from .send import task
+
+from send import task
 from note_log import get_logger
 
 lg=get_logger(name="rabbitmq",file_name="fundoo_note.log")
@@ -33,15 +29,15 @@ class UserRegisterView(GenericAPIView):
             serializer = UserSerializer(data=request.data)
             serializer.is_valid(raise_exception=True)
             serializer.save()
-            lg.info("user successfully registered")
             # Util.user_verify_user(id=serializer.data.get("id"),email=serializer.data.get("email"))
             token = JWT().jwt_encode({"user_id": serializer.data.get(
                 "id"), "username": serializer.data.get("username")})
             message = settings.BASE_URL + "/user/verify/"+token
             print(message)
             recipent = serializer.data.get('email')
-            task(method='send_email',
-                               payload={"recipent": recipent, "message": message})
+            data = {'email': serializer.data.get('email'), 'message':message}
+            task(data)
+                               
 
             return Response({"status": True, "message": "register successfully",
                              "data": serializer.data}, status=status.HTTP_200_OK)
@@ -71,6 +67,7 @@ class UserLoginView(APIView):
             serializer = LoginSerializer(data=request.data)
             serializer.is_valid(raise_exception=True)
             serializer.save()
+            # task(serializer.data,"login")
             lg.info("user successfully logged in")
             return Response({"status": True, "message": "logged in successfully",
                              "data": serializer.data}, status=status.HTTP_200_OK)

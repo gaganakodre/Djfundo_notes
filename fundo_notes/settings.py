@@ -139,7 +139,7 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_USE_TLS = True
 EMAIL_PORT = 587
 EMAIL_HOST_USER = 'maheshkodergowri@gmail.com'
-EMAIL_HOST_PASSWORD = 'kwbtufhqzznpdngk'
+EMAIL_HOST_PASSWORD = 'gjybeclxdvyhydzl'
 
 BASE_URL='http://127.0.0.1:8000'
 

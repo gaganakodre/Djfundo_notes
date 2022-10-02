@@ -1,62 +1,51 @@
+import json
+import os
+import smtplib
+import sys
 
 import pika
-import json
-import sys
-import os
-from email.message import EmailMessage
-import smtplib
-import os
-
 
 
 class Consumer:
-    """
-     will receive messages from the queue and print them on the screen
-    """
-    def __init__(self):
-        self.connection = pika.BlockingConnection(
-            pika.ConnectionParameters('localhost'))
-        self.channel = self.connection.channel()
-        self.channel.queue_declare(queue='task_queue')
 
-    def mail_send(self, body):
-        sender = "maheshkodergowri@gmail.com"
-        sender_password = "kwbtufhqzznpdngk"
-        payload = json.loads(body)
-        msg = EmailMessage()  # Python EmailMessage Function
-        msg['From'] = sender
-        msg['To'] = payload.get('recipent')
-        msg['Subject'] = 'User Registration with rabbitmq'
-        msg.set_content(payload.get('message'))
-        with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
-            smtp.login(user=sender, password=sender_password)
-            smtp.sendmail(sender, payload.get(
-                'recipent'), msg.as_string())
-            print("[*] Mail sent to ", payload.get('recipent'))
-            smtp.quit()
+    def send_mail(self, body):
+        EMAIL_ADDRESS = os.getenv('EMAIL_HOST_USER')
+        EMAIL_PASSWORD = os.getenv('EMAIL_HOST_USER')
 
-
-    def callback(self, ch, method, properties, body):
-        # self.mail_send(body)
-        print("received", body)
+        data = json.loads(body)
+        print(data)
+        receivers = [data.get('email')]
+        subject = "Verification"
+        body = "Click on this " + data.get('message')
+        message = f'subject: {subject}\n\n{body}'
+        server = smtplib.SMTP('smtp.gmail.com', 587)
+        server.starttls()
+        server.login(EMAIL_ADDRESS, EMAIL_PASSWORD)
+        server.sendmail(EMAIL_ADDRESS, receivers, message)
+        server.close()
 
     def run(self):
+        connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost'))
+        channel = connection.channel()
 
-        self.channel.basic_consume(queue='task_queue', on_message_callback=self.callback,auto_ack=True)
-        print("consumer started")
-        self.channel.start_consuming()
+        channel.queue_declare(queue='send_mail')
+
+        def callback(ch, method, properties, body):
+            self.send_mail(body)
+            print(" [x] Received %r" % body)
+
+        channel.basic_consume(queue='send_mail', on_message_callback=callback, auto_ack=True)
+
+        print(' [*] Waiting for messages. To exit press CTRL+C')
+        channel.start_consuming()
 
 
 if __name__ == '__main__':
-
     try:
-       consumer= Consumer()
-       consumer.run()
+        Consumer().run()
     except KeyboardInterrupt:
         print('Interrupted')
         try:
             sys.exit(0)
         except SystemExit:
             os._exit(0)
-
-
