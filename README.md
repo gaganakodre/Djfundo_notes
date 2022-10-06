@@ -1,4 +1,3 @@
-
 # Fundo_notes
 
 The main objective the this project is to create the backend of Notes taking app where user can add, update and delete the notes including some customization of adding color using python and django 
@@ -15,7 +14,7 @@ Technology Used: Python, Django Rest Framework
 [DRF Docs](https://www.django-rest-framework.org/), Django rest framework to implement the serializations and etc.
 
 Concept Used: Redis, Celery, Swagger, Logger, Jinja Template, PYJWT,
-custom Middlewares
+custom Middlewares, Raw queries, RabbitMQ server
 
 1.Logger:to track the events that happen when some software 
 [Logging Docs](https://docs.python.org/3/howto/logging.html)
@@ -35,6 +34,13 @@ custom Middlewares
 6.Custom Middleware:
 [implementation guide](https://docs.djangoproject.com/en/4.1/topics/http/middleware/)
 
+7.Raw queries:[raw queries](https://docs.djangoproject.com/en/4.1/topics/db/sql/#:~:text=Django%20gives%20you%20two%20ways,ORM%20before%20using%20raw%20SQL!)
+ writing the SQL queries to work with the models using raw method and also using The object django.db.connection 
+from django
+
+8.Rabbit MQ: RabbitMQ is a messaging broker - an intermediary for messaging.[guide](https://www.rabbitmq.com/tutorials/tutorial-one-python.html) 
+
+
 
 
 
@@ -50,9 +56,8 @@ important commands to implement the project:
 ## Features
 
 ```
-* User Login Registration and account verification from email
-* CRUD operation with Notes
-* Create and updating with labels
-* Running Tests
+User Login Registration and account verification from email
+CRUD operation with Notes
+Create and updating with labels
+Running Tests
 ```
-
