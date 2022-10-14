@@ -1,6 +1,6 @@
 # Fundo_notes
 
-The main objective the this project is to create the backend of Bookstore web application where admin can add, update and delete the books and user can get,and add the book into the cart
+The main objective the this project is to create the backend of Notes web application where user can add, update and delete the notes and user can get notes
 
 ## Tech Stack
 Tech Stack
@@ -13,7 +13,7 @@ Technology Used: Python, Django Rest Framework,PyJwt
 
 [DRF Docs](https://www.django-rest-framework.org/), Django rest framework to implement the serializations and etc.
 
-Concept Used: Serializers,pyjwt
+Concept Used: Serializers,pyjwt,redies,swagger,middleware,celery,rabbitMQ
 
 1.Logger:to track the events that happen when some software 
 [Logging Docs](https://docs.python.org/3/howto/logging.html)
