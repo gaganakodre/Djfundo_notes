@@ -39,6 +39,7 @@ important commands to implement the project:
 
 ```
 User Login Registration and account verification from email
-CRUD operation with Admin
-User can get the book and add the books to cart 
+CRUD operation with User
+User can get the notes and add the books to cart 
+running the test
 ```
