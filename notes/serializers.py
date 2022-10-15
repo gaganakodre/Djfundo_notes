@@ -9,6 +9,9 @@ class NoteSerializer(serializers.ModelSerializer):
     """
 
     class Meta:
+        """
+        Model Meta is basically used to change the behavior of your model fields 
+        """
         model = Notes
         fields = ['id', 'title', 'description', 'user', 'labels','collaborator','is_pinned','is_archive']
 

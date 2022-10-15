@@ -9,6 +9,8 @@ from user.models import User
 class Notes(models.Model):
     """
     This model class create the notes with title and description
+    many to many fields used when a model needs to reference multiple instances of another model.
+    many to one fields is used to refer the another intsance of other model
     """
     title = models.CharField(max_length=250)
     description = models.TextField()
