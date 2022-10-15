@@ -74,6 +74,10 @@ class Note(APIView):
 
 
 class RawQueriesNotes(APIView):
+    """
+    The raw() manager method can be used to perform raw SQL queries that return model instances,
+    A cursor is an object which helps to execute the query and fetch the records from the database.
+    """
     def post(self, request):
         user=request.data.get("user")
         title= request.data.get("title")
