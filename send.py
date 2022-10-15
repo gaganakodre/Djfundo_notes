@@ -1,7 +1,11 @@
 import json
 
 import pika
-
+"""
+RabbitMQ is a messaging broker - an intermediary for messaging.
+It gives your applications a common platform to send and receive messages, 
+and your messages a safe place to live until received
+"""
 
 def task(body):
     connection = pika.BlockingConnection(
